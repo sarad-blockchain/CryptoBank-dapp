@@ -1,10 +1,10 @@
 {
   "name": "solaris-bank",
   "version": "1.0.0",
-  "description": "SOLARIS BANK — Ethereum DApp frontend built with Angular",
+  "description": "SOLARIS BANK \u2014 Ethereum DApp frontend built with Angular",
   "scripts": {
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "node init && ng serve",
+    "build": "node init && ng build",
     "build:prod": "ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint"
