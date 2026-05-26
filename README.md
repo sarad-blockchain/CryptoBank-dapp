@@ -36,21 +36,21 @@ This project demonstrates a complete Web3 frontend–contract integration: ABI b
 ## Features
 
 ### User
-- 🦊 **MetaMask wallet connection** with auto-detection and account change listeners
-- 💰 **Deposit ETH** — enforces per-user `MaxBalance` limit set in the contract
-- 💸 **Withdraw ETH** — checks on-chain balance before sending the transaction
-- 📊 **Live dashboard** — displays wallet balance, user balance, and contract state
-- 🔔 **Transaction history** — tracks pending / confirmed status per tx hash
+-  **MetaMask wallet connection** with auto-detection and account change listeners
+-  **Deposit ETH** — enforces per-user `MaxBalance` limit set in the contract
+-  **Withdraw ETH** — checks on-chain balance before sending the transaction
+-  **Live dashboard** — displays wallet balance, user balance, and contract state
+-  **Transaction history** — tracks pending / confirmed status per tx hash
 
 ### Admin
-- 🔐 **Admin panel** protected by route guard (`adminGuard`)
-- ⚙️ **Modify MaxBalance** — update the deposit cap for all users in real time
+-  **Admin panel** protected by route guard (`adminGuard`)
+-  **Modify MaxBalance** — update the deposit cap for all users in real time
 
 ### UX / DX
-- 🌐 **Network guard** — redirects users on the wrong chain before any tx
-- ⚡ **Angular Signals** for reactive, zero-boilerplate state management
-- 🔄 **Lazy-loaded routes** for optimized bundle size
-- 📱 **Responsive layout** with custom SCSS design system
+-  **Network guard** — redirects users on the wrong chain before any tx
+-  **Angular Signals** for reactive, zero-boilerplate state management
+-  **Lazy-loaded routes** for optimized bundle size
+- **Responsive layout** with custom SCSS design system
 
 ---
 
