@@ -1,0 +1,14 @@
+// Dashboard component — feature-specific overrides
+// Global styles handle the majority; only page-specific tweaks here.
+
+// Hero coin stage container — establishes the 3D perspective
+.hero__coin-stage {
+  perspective: 800px;
+}
+
+// Stat grid columns on wider screens
+@media (min-width: 1024px) {
+  .stat-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

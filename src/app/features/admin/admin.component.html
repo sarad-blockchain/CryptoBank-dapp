@@ -1,0 +1,136 @@
+<!-- ============================================================
+     Admin Panel — ModifyMaxBalance() — restricted to contract admin
+     Only accessible after passing walletGuard + adminGuard
+     ============================================================ -->
+<div class="fade-up">
+
+  <!-- Page header — amber/warning aesthetic for admin zone -->
+  <div class="page-header" style="border-bottom-color: rgba(198,255,51,0.2);">
+    <div class="page-header__left">
+      <span class="page-header__eyebrow" style="color: var(--lime);">
+        Admin Only · Restricted Access
+      </span>
+      <h2 class="page-header__title page-header__title--lime">Admin Panel</h2>
+    </div>
+    <!-- Rotating admin coin -->
+    <div style="width:64px; height:64px; animation: coin-spin-3d 3s linear infinite; flex-shrink:0;">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="31" fill="url(#admGrad)" stroke="#9ED400" stroke-width="2"/>
+        <text x="32" y="39" font-family="monospace" font-size="13" font-weight="bold"
+              fill="#000" text-anchor="middle">ADM</text>
+        <defs>
+          <radialGradient id="admGrad" cx="30%" cy="25%">
+            <stop offset="0%" stop-color="#E5FFB0"/>
+            <stop offset="100%" stop-color="#C6FF33"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Admin address confirmation — shows authenticated wallet -->
+  <div class="alert alert--warn mb-4" style="font-size:0.78rem;">
+    Authenticated as admin:&nbsp;
+    <code>{{ web3.walletState().address }}</code>
+  </div>
+
+  <div class="grid-2" style="align-items: start;">
+
+    <!-- ── Modify Max Balance Form ── -->
+    <div class="card card--lime">
+      <h3 style="font-family:var(--font-display); font-size:1.8rem; color:var(--lime); margin-bottom:0.4rem; text-shadow: 0 0 20px rgba(198,255,51,0.3);">
+        Modify Max Balance
+      </h3>
+      <p class="text-muted mb-3" style="font-size:0.82rem; font-family:var(--font-mono);">
+        Current limit: <strong style="color:var(--lime);">{{ contract.bankState().maxBalance | ether }}</strong>
+        — applies globally to all wallets.
+      </p>
+
+      <!-- Success alert -->
+      <div class="alert alert--success mb-3" *ngIf="success">
+        Max balance updated successfully on-chain.
+      </div>
+
+      <!-- Error alert -->
+      <div class="alert alert--error mb-3" *ngIf="contract.error()">
+        {{ contract.error() }}
+      </div>
+
+      <!-- New max input -->
+      <div class="form-group">
+        <label for="newMax">New Max Balance (ETH)</label>
+        <input id="newMax" type="number" [(ngModel)]="newMaxBalance"
+               placeholder="e.g. 10.0" min="0.001" step="0.5" />
+        <p class="form-hint">
+          Sets <code>MaxBalance</code> on the contract (stored in wei internally)
+        </p>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn btn--primary btn--full btn--lg"
+              [disabled]="!isValid || contract.isLoading()"
+              (click)="updateMaxBalance()">
+        <ng-container *ngIf="!contract.isLoading()">
+          Set Max to {{ newMaxBalance || '?' }} ETH
+        </ng-container>
+        <ng-container *ngIf="contract.isLoading()">
+          Broadcasting transaction…
+        </ng-container>
+      </button>
+
+      <!-- Loading spinner -->
+      <div class="loader" *ngIf="contract.isLoading()">
+        <span class="loader__dot"></span>
+        <span class="loader__dot"></span>
+        <span class="loader__dot"></span>
+      </div>
+    </div>
+
+    <!-- ── Contract Metadata Panel ── -->
+    <div>
+      <!-- Dark card showing on-chain addresses -->
+      <div class="card card--dark mb-3">
+        <p class="label-caps mb-3">Contract Info</p>
+
+        <p class="label-caps mb-1" style="font-size:0.58rem; color:rgba(255,255,255,0.3);">Admin Address</p>
+        <p class="mb-3" style="font-family:var(--font-mono); color:var(--lime); font-size:0.72rem; word-break:break-all; line-height:1.5;">
+          {{ contract.bankState().adminAddress }}
+        </p>
+
+        <p class="label-caps mb-1" style="font-size:0.58rem; color:rgba(255,255,255,0.3);">Contract Address</p>
+        <p style="font-family:var(--font-mono); color:var(--white-60); font-size:0.72rem; word-break:break-all; line-height:1.5;">
+          {{ contract.bankState().contractAddress }}
+        </p>
+      </div>
+
+      <div class="divider" style="margin: 1rem 0;"></div>
+
+      <!-- Technical explanation of the admin modifier -->
+      <p class="text-muted" style="font-size:0.78rem; font-family:var(--font-mono); line-height:1.8; letter-spacing:0.02em;">
+        <code>ModifyMaxBalance</code> is guarded by the <code>OnlyAdmin</code> modifier.
+        Any wallet that isn't the admin will receive a revert.
+        Changes are instant — no timelock.
+      </p>
+
+      <a routerLink="/dashboard" class="btn btn--ghost mt-3" style="display:inline-flex;">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ── Session Transaction Log ── -->
+  <div class="card mt-4 fade-up delay-2" *ngIf="contract.transactions().length > 0">
+    <p class="label-caps mb-3">Session Transactions</p>
+    <ul class="tx-list">
+      <li class="tx-item" *ngFor="let tx of contract.transactions()">
+        <span class="tx-item__pill" [class]="tx.type">{{ tx.type }}</span>
+        <a [href]="'https://sepolia.etherscan.io/tx/' + tx.hash"
+           target="_blank" rel="noopener" class="tx-item__hash">{{ tx.hash }}</a>
+        <span class="tx-item__amount">{{ tx.amount }} ETH</span>
+        <span class="tx-item__status" [class]="tx.status">{{ tx.status }}</span>
+      </li>
+    </ul>
+  </div>
+
+</div>

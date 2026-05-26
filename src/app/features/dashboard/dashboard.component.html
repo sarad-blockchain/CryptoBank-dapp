@@ -1,0 +1,341 @@
+<!-- ============================================================
+     Dashboard — main view
+     Two states:
+       1) Disconnected: hero landing with animated coin stage
+       2) Connected: full bank overview with stats, actions, tx history
+     ============================================================ -->
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- STATE 1: DISCONNECTED — Hero Landing                        -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<ng-container *ngIf="!web3.walletState().isConnected">
+
+  <section class="hero fade-up">
+    <div class="hero__inner">
+
+      <!-- Left column: copy & CTA -->
+      <div class="hero__left">
+
+        <p class="hero__eyebrow">Ethereum · Sepolia Testnet · Non-Custodial</p>
+
+        <h1 class="hero__title">
+          SOLARIS
+          <span>BANK</span>
+        </h1>
+
+        <p class="hero__tagline">— Digital Trust Since Tomorrow —</p>
+
+        <p class="hero__sub">
+          On-chain banking powered by a Solidity smart contract.
+          Deposit, withdraw and manage ETH with full transparency —
+          your keys, your funds, zero custody risk.
+        </p>
+
+        <div class="hero__actions">
+          <button class="btn btn--primary btn--lg" (click)="connect()">
+            Connect MetaMask
+          </button>
+          <a [href]="explorerUrl" target="_blank" rel="noopener"
+             class="btn btn--ghost-lime btn--lg">
+            View Contract ↗
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Right column: animated coin stage -->
+      <div class="hero__coin-stage fade-in delay-3">
+
+        <!-- Ambient glow rings around the main coin -->
+        <div class="coin-rings"></div>
+
+        <!-- Main spinning coin with float animation -->
+        <div class="coin-main">
+          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer rim -->
+            <circle cx="100" cy="100" r="98" fill="url(#coinGrad)" stroke="#5B20C8" stroke-width="3"/>
+            <!-- Inner decorative ring -->
+            <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(198,255,51,0.35)" stroke-width="1.5" stroke-dasharray="8 6"/>
+            <!-- Inner ring 2 -->
+            <circle cx="100" cy="100" r="62" fill="none" stroke="rgba(125,57,235,0.3)" stroke-width="1"/>
+            <!-- S lettermark -->
+            <text x="100" y="125" font-family="monospace" font-size="72" font-weight="bold"
+                  fill="#C6FF33" text-anchor="middle"
+                  style="filter: drop-shadow(0 0 12px rgba(198,255,51,0.8))">S</text>
+            <!-- Shine highlight -->
+            <ellipse cx="75" cy="70" rx="22" ry="14" fill="rgba(255,255,255,0.08)" transform="rotate(-30 75 70)"/>
+
+            <defs>
+              <radialGradient id="coinGrad" cx="35%" cy="30%">
+                <stop offset="0%"   stop-color="#9D5FF0"/>
+                <stop offset="60%"  stop-color="#7D39EB"/>
+                <stop offset="100%" stop-color="#5B20C8"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Orbiting coins — first orbit layer -->
+        <div class="coin-orbit" style="width:340px; height:340px; position:absolute;">
+          <div class="coin-orbit__coin">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="22" cy="22" r="21" fill="#C6FF33" stroke="#9ED400" stroke-width="1.5"/>
+              <text x="22" y="27" font-family="monospace" font-size="11" font-weight="bold"
+                    fill="#000" text-anchor="middle">ETH</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Second orbit — counter-rotates slower -->
+        <div class="coin-orbit" style="width:260px; height:260px; position:absolute; animation-duration:8s; animation-direction:reverse;">
+          <div class="coin-orbit__coin" style="animation-duration:8s;">
+            <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="22" cy="22" r="21" fill="rgba(125,57,235,0.5)" stroke="#7D39EB" stroke-width="1.5"/>
+              <text x="22" y="27" font-family="monospace" font-size="10" font-weight="bold"
+                    fill="#C6FF33" text-anchor="middle">SOL</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Scattered background coins -->
+        <div class="coin-scatter" style="--size:20px; --dur:5s; --delay:0s; top:8%; left:15%;">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#7D39EB" opacity="0.6"/><text x="10" y="14" font-size="8" font-family="monospace" fill="#C6FF33" text-anchor="middle">$</text></svg>
+        </div>
+        <div class="coin-scatter" style="--size:16px; --dur:6s; --delay:1.2s; top:75%; left:10%;">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#C6FF33" opacity="0.5"/><text x="10" y="14" font-size="7" font-family="monospace" fill="#000" text-anchor="middle">Ξ</text></svg>
+        </div>
+        <div class="coin-scatter" style="--size:22px; --dur:4.5s; --delay:0.6s; top:20%; right:8%;">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#5B20C8" opacity="0.7"/><text x="10" y="14" font-size="8" font-family="monospace" fill="#fff" text-anchor="middle">♦</text></svg>
+        </div>
+        <div class="coin-scatter" style="--size:14px; --dur:7s; --delay:2s; bottom:15%; right:12%;">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#7D39EB" opacity="0.4"/></svg>
+        </div>
+
+      </div><!-- /.hero__coin-stage -->
+
+    </div><!-- /.hero__inner -->
+  </section>
+
+  <!-- Gradient divider -->
+  <div class="divider"></div>
+
+  <!-- Feature cards — what Solaris does -->
+  <div class="grid-3 fade-up delay-2">
+
+    <div class="feature-card">
+      <p class="feature-card__num">01</p>
+      <h3 class="feature-card__title">Deposit ETH</h3>
+      <p class="feature-card__desc">
+        Send Ether straight to the smart contract.
+        A per-wallet cap set by the admin keeps the system balanced.
+      </p>
+    </div>
+
+    <div class="feature-card feature-card--lime">
+      <p class="feature-card__num" style="color: rgba(198,255,51,0.1);">02</p>
+      <h3 class="feature-card__title" style="color: var(--lime);">Withdraw Anytime</h3>
+      <p class="feature-card__desc">
+        Reclaim exactly what you deposited. No custody risk —
+        the contract holds your ETH, never us.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <p class="feature-card__num">03</p>
+      <h3 class="feature-card__title">100% Transparent</h3>
+      <p class="feature-card__desc">
+        Every deposit and withdrawal is a verifiable on-chain event.
+        Open-source. Zero hidden logic.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Contract address link at the bottom -->
+  <div style="display:flex; justify-content:center; margin-top: 1.5rem;">
+    <a [href]="explorerUrl" target="_blank" rel="noopener" class="contract-tag">
+      <span class="contract-tag__dot"></span>
+      CryptoBank.sol — Sepolia Testnet
+      <span style="opacity:0.5; margin-left:0.25rem;">↗</span>
+    </a>
+  </div>
+
+</ng-container>
+
+
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- STATE 2: CONNECTED — Full Dashboard                         -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<ng-container *ngIf="web3.walletState().isConnected">
+
+  <!-- Page header with title and live contract link -->
+  <div class="page-header fade-up">
+    <div class="page-header__left">
+      <span class="page-header__eyebrow">Account Overview</span>
+      <h2 class="page-header__title page-header__title--lime">Dashboard</h2>
+    </div>
+    <a [href]="explorerUrl" target="_blank" rel="noopener" class="contract-tag">
+      <span class="contract-tag__dot"></span>
+      Live on Sepolia ↗
+    </a>
+  </div>
+
+  <!-- Loading state — bouncing dots while fetching chain data -->
+  <div class="loader" *ngIf="contract.isLoading()">
+    <span class="loader__dot"></span>
+    <span class="loader__dot"></span>
+    <span class="loader__dot"></span>
+    <span class="loader__text">Reading chain state…</span>
+  </div>
+
+  <!-- Error alert — shown when contract calls fail -->
+  <div class="alert alert--error mb-3" *ngIf="contract.error()">
+    {{ contract.error() }}
+  </div>
+
+  <!-- ── Stat Cards ── -->
+  <div class="stat-grid fade-up" *ngIf="!contract.isLoading()">
+
+    <!-- User balance locked in contract -->
+    <div class="stat-card stat-card--lime">
+      <p class="stat-card__label">Your Balance</p>
+      <p class="stat-card__value">{{ contract.bankState().userBalance | ether }}</p>
+      <p class="stat-card__sub">Locked in contract</p>
+    </div>
+
+    <!-- Per-wallet maximum enforced by admin -->
+    <div class="stat-card stat-card--violet">
+      <p class="stat-card__label">Max Per Wallet</p>
+      <p class="stat-card__value">{{ contract.bankState().maxBalance | ether }}</p>
+      <p class="stat-card__sub">Admin-enforced cap</p>
+    </div>
+
+    <!-- Utilization percentage -->
+    <div class="stat-card stat-card--white">
+      <p class="stat-card__label">Utilization</p>
+      <p class="stat-card__value">{{ utilizationPercent }}%</p>
+      <p class="stat-card__sub">Of your capacity</p>
+    </div>
+
+    <!-- Network info -->
+    <div class="stat-card">
+      <p class="stat-card__label">Network</p>
+      <p class="stat-card__value" style="font-family: var(--font-mono); font-size:1.2rem;">Sepolia</p>
+      <p class="stat-card__sub">Chain ID 11155111</p>
+    </div>
+
+  </div>
+
+  <!-- ── Capacity Bar ── -->
+  <div class="card mb-3 fade-up delay-1" *ngIf="!contract.isLoading()">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+      <p class="label-caps">Deposit Capacity</p>
+      <span style="font-family: var(--font-mono); font-size:0.72rem; color: var(--white-60);">
+        {{ formatEth(contract.bankState().userBalance) }} / {{ formatEth(contract.bankState().maxBalance) }} ETH
+      </span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-bar__fill"
+           [class.warn]="utilizationPercent >= 60"
+           [class.danger]="utilizationPercent >= 90"
+           [style.width.%]="utilizationPercent">
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quick Action Cards ── -->
+  <div class="grid-2 fade-up delay-2 mb-3">
+
+    <!-- Deposit action -->
+    <a routerLink="/deposit" class="card card--glow" style="text-decoration:none; display:block; cursor:pointer;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;">
+        <div>
+          <p class="label-caps mb-1">Action</p>
+          <h3 class="page-header__title page-header__title--lime">Deposit ETH</h3>
+        </div>
+        <!-- Animated mini coin -->
+        <div style="flex-shrink:0; width:52px; height:52px; animation: coin-float 3s ease-in-out infinite;">
+          <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="26" cy="26" r="25" fill="url(#dGrad)" stroke="#9ED400" stroke-width="1.5"/>
+            <text x="26" y="32" font-family="monospace" font-size="14" font-weight="bold"
+                  fill="#000" text-anchor="middle">↓</text>
+            <defs>
+              <radialGradient id="dGrad" cx="30%" cy="30%">
+                <stop offset="0%" stop-color="#E5FFB0"/>
+                <stop offset="100%" stop-color="#C6FF33"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <p class="text-muted mt-2" style="font-size:0.8rem; font-family: var(--font-mono);">
+        Available: {{ formatEth(contract.bankState().maxBalance - contract.bankState().userBalance) }} ETH
+      </p>
+    </a>
+
+    <!-- Withdraw action -->
+    <a routerLink="/withdraw" class="card card--glow" style="text-decoration:none; display:block; cursor:pointer;">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;">
+        <div>
+          <p class="label-caps mb-1">Action</p>
+          <h3 class="page-header__title page-header__title--violet">Withdraw ETH</h3>
+        </div>
+        <!-- Animated mini violet coin -->
+        <div style="flex-shrink:0; width:52px; height:52px; animation: coin-float 3s ease-in-out 1.5s infinite;">
+          <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="26" cy="26" r="25" fill="url(#wGrad)" stroke="#5B20C8" stroke-width="1.5"/>
+            <text x="26" y="32" font-family="monospace" font-size="14" font-weight="bold"
+                  fill="#C6FF33" text-anchor="middle">↑</text>
+            <defs>
+              <radialGradient id="wGrad" cx="30%" cy="30%">
+                <stop offset="0%" stop-color="#B07AF5"/>
+                <stop offset="100%" stop-color="#7D39EB"/>
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <p class="text-muted mt-2" style="font-size:0.8rem; font-family: var(--font-mono);">
+        Claimable: {{ formatEth(contract.bankState().userBalance) }} ETH
+      </p>
+    </a>
+
+  </div>
+
+  <!-- ── Transaction History ── -->
+  <div class="card fade-up delay-3" *ngIf="contract.transactions().length > 0">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;">
+      <p class="label-caps">Session Transactions</p>
+      <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--lime); background:rgba(198,255,51,0.1); border:1px solid rgba(198,255,51,0.25); padding:0.2rem 0.6rem; border-radius:99px;">
+        {{ contract.transactions().length }} txs
+      </span>
+    </div>
+    <ul class="tx-list">
+      <li class="tx-item" *ngFor="let tx of contract.transactions()">
+        <span class="tx-item__pill" [class]="tx.type">{{ tx.type }}</span>
+        <a [href]="'https://sepolia.etherscan.io/tx/' + tx.hash"
+           target="_blank" rel="noopener"
+           class="tx-item__hash">{{ tx.hash }}</a>
+        <span class="tx-item__amount">{{ tx.amount }} ETH</span>
+        <span class="tx-item__status" [class]="tx.status">{{ tx.status }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── Admin Shortcut — only shown when wallet is admin ── -->
+  <div class="card card--violet mt-3 fade-up delay-4" *ngIf="web3.walletState().isAdmin">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+      <div>
+        <p class="label-caps mb-1">Admin Access</p>
+        <h4 style="color: var(--lime); font-size: 1rem;">You control the contract</h4>
+        <p style="font-size:0.8rem; color:var(--white-60); margin-top:0.3rem; font-family:var(--font-mono);">
+          Modify per-wallet cap · manage contract parameters
+        </p>
+      </div>
+      <a routerLink="/admin" class="btn btn--primary">Open Admin Panel →</a>
+    </div>
+  </div>
+
+</ng-container>

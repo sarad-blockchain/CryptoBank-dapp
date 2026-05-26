@@ -1,0 +1,57 @@
+<!-- ============================================================
+     Navbar — sticky top bar with coin logo, nav links, wallet state
+     Uses Angular signals from Web3Service for reactive wallet display
+     ============================================================ -->
+<nav class="navbar">
+
+  <!-- Brand: animated 3D coin + wordmark -->
+  <a routerLink="/" class="navbar__brand">
+    <!-- SVG coin that rotates on hover via CSS animation -->
+    <div class="navbar__coin">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Coin body -->
+        <circle cx="18" cy="18" r="17" fill="#7D39EB" stroke="#5B20C8" stroke-width="1.5"/>
+        <!-- Coin inner ring -->
+        <circle cx="18" cy="18" r="13" fill="none" stroke="rgba(198,255,51,0.4)" stroke-width="0.8"/>
+        <!-- S lettermark -->
+        <text x="18" y="23" font-family="monospace" font-size="14" font-weight="bold"
+              fill="#C6FF33" text-anchor="middle">S</text>
+      </svg>
+    </div>
+
+    <div class="navbar__wordmark">
+      <span class="navbar__name">SOLARIS</span>
+      <span class="navbar__tagline">Digital Trust Since Tomorrow</span>
+    </div>
+  </a>
+
+  <!-- Primary navigation — visible only when wallet is connected -->
+  <nav class="navbar__links" *ngIf="web3.walletState().isConnected">
+    <a routerLink="/dashboard" routerLinkActive="active">Overview</a>
+    <a routerLink="/deposit"   routerLinkActive="active">Deposit</a>
+    <a routerLink="/withdraw"  routerLinkActive="active">Withdraw</a>
+    <!-- Admin link — conditionally shown based on wallet admin status -->
+    <a routerLink="/admin" routerLinkActive="active"
+       *ngIf="web3.walletState().isAdmin">Admin</a>
+  </nav>
+
+  <!-- Right cluster: network badge, address, action button -->
+  <div class="navbar__right">
+
+    <!-- Connected state: show address, network, disconnect -->
+    <ng-container *ngIf="web3.walletState().isConnected">
+      <span class="navbar__network">Sepolia</span>
+      <span class="navbar__address">{{ shortAddress }}</span>
+      <button class="btn btn--ghost" (click)="disconnect()">Disconnect</button>
+    </ng-container>
+
+    <!-- Disconnected state: single CTA -->
+    <ng-container *ngIf="!web3.walletState().isConnected">
+      <button class="btn btn--primary" (click)="connect()">
+        Connect Wallet
+      </button>
+    </ng-container>
+
+  </div>
+
+</nav>
