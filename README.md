@@ -1,247 +1,159 @@
-<div align="center">
+# Solaris Bank — Decentralized Banking DApp
 
-```txt
- ███████╗ ██████╗ ██╗      █████╗ ██████╗ ██╗███████╗
- ██╔════╝██╔═══██╗██║     ██╔══██╗██╔══██╗██║██╔════╝
- ███████╗██║   ██║██║     ███████║██████╔╝██║███████╗
- ╚════██║██║   ██║██║     ██╔══██║██╔══██╗██║╚════██║
- ███████║╚██████╔╝███████╗██║  ██║██║  ██║██║███████║
- ╚══════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚══════╝
-```
+> A full-stack Web3 application integrating a Solidity smart contract with an Angular 17 frontend. Users can deposit and withdraw ETH through MetaMask, with an admin panel for contract governance.
 
-### **Digital Trust Since Tomorrow**
-
-[![Angular](https://img.shields.io/badge/Angular-19-DD0031?style=flat-square&logo=angular)](https://angular.io)
-[![Solidity](https://img.shields.io/badge/Solidity-0.8.x-363636?style=flat-square&logo=solidity)](https://soliditylang.org)
-[![Ethereum](https://img.shields.io/badge/Ethereum-Sepolia-3C3C3D?style=flat-square&logo=ethereum)](https://ethereum.org)
-[![ethers.js](https://img.shields.io/badge/ethers.js-v6-blue?style=flat-square)](https://ethers.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org)
-
-### Full-stack Ethereum Banking dApp  
-*Angular · Solidity · Ethers.js · MetaMask · Sepolia Testnet*
-
-</div>
+![Angular](https://img.shields.io/badge/Angular-17-DD0031?style=flat&logo=angular)
+![Solidity](https://img.shields.io/badge/Solidity-0.8.34-363636?style=flat&logo=solidity)
+![Ethers.js](https://img.shields.io/badge/Ethers.js-v6-3C3C3D?style=flat)
+![Network](https://img.shields.io/badge/Network-Sepolia_Testnet-6F4CBA?style=flat)
+![License](https://img.shields.io/badge/License-GPL--3.0-blue?style=flat)
 
 ---
 
-## Live Demo
+## Table of Contents
 
-🔗 https://your-demo-url.vercel.app
-
----
-
-## Smart Contract
-
-🔗 https://sepolia.etherscan.io/address/0x530D75e43753D2bF01b8574446DcC4f7189Da1E9
+- [Overview](#overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Smart Contract](#smart-contract)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Environment Configuration](#environment-configuration)
+- [Project Structure](#project-structure)
+- [Key Design Decisions](#key-design-decisions)
+- [Roadmap](#roadmap)
 
 ---
 
 ## Overview
 
-**SOLARIS** is a non-custodial Ethereum banking dApp built with Angular 19, Solidity, and ethers.js v6.
+**Solaris Bank** is a decentralized banking application deployed on the **Sepolia testnet**. The smart contract (`CryptoBank.sol`) manages ETH balances per user with a configurable maximum deposit cap. The Angular frontend connects to the contract via **ethers.js v6**, with wallet detection, network validation, and real-time transaction tracking.
 
-The application connects to a `CryptoBank` smart contract deployed on the Ethereum Sepolia testnet, allowing users to securely deposit and withdraw ETH directly through MetaMask while enforcing a per-wallet balance cap entirely on-chain.
-
-The frontend architecture leverages:
-- Angular Standalone Components
-- Angular Signals API
-- Lazy-loaded feature routes
-- Functional route guards
-- Reactive wallet state management
-- Ethers.js smart contract integration
-
-The visual identity combines retro-futuristic banking aesthetics with modern Web3 UX patterns: glowing neon accents, animated SVG coins, scanline textures, and high-contrast typography inspired by 1970s financial advertising.
+This project demonstrates a complete Web3 frontend–contract integration: ABI binding, MetaMask wallet lifecycle, route guards, and reactive state management using Angular Signals.
 
 ---
 
 ## Features
 
-| Feature | Description |
-|---|---|
-| **MetaMask Integration** | Connect wallet using EIP-1193 provider |
-| **Deposit ETH** | Call `DepositEther()` with real ETH transactions |
-| **Withdraw ETH** | Withdraw user balance through smart contract interaction |
-| **Admin Dashboard** | Modify global wallet cap via admin-only function |
-| **Reactive Wallet State** | Real-time updates using Angular Signals |
-| **Network Validation** | Guards app access to Sepolia only |
-| **Admin Route Protection** | Restricts `/admin` to contract owner |
-| **Session Transaction History** | Local transaction log with Etherscan links |
-| **Live Smart Contract Reads** | Reads balances, admin address, and limits directly from chain |
-| **Animated UI System** | Floating SVG coins, glow effects, scanlines, neon gradients |
+### User
+- 🦊 **MetaMask wallet connection** with auto-detection and account change listeners
+- 💰 **Deposit ETH** — enforces per-user `MaxBalance` limit set in the contract
+- 💸 **Withdraw ETH** — checks on-chain balance before sending the transaction
+- 📊 **Live dashboard** — displays wallet balance, user balance, and contract state
+- 🔔 **Transaction history** — tracks pending / confirmed status per tx hash
 
----
+### Admin
+- 🔐 **Admin panel** protected by route guard (`adminGuard`)
+- ⚙️ **Modify MaxBalance** — update the deposit cap for all users in real time
 
-## Web3 Features
-
-- EIP-1193 MetaMask provider integration
-- Smart contract reads/writes via ethers.js v6
-- Ethereum transaction lifecycle handling
-- Wallet connection persistence
-- Sepolia chain validation
-- Non-custodial architecture
-- Role-based route protection
-- On-chain balance synchronization
-- Etherscan transaction linking
+### UX / DX
+- 🌐 **Network guard** — redirects users on the wrong chain before any tx
+- ⚡ **Angular Signals** for reactive, zero-boilerplate state management
+- 🔄 **Lazy-loaded routes** for optimized bundle size
+- 📱 **Responsive layout** with custom SCSS design system
 
 ---
 
 ## Tech Stack
 
-```txt
-Frontend   Angular 19 · Standalone Components · Signals API
-Language   TypeScript 5.6
-Blockchain Solidity · ethers.js v6 · MetaMask
-Styling    SCSS · CSS Variables · Responsive Layouts
-Fonts      Bebas Neue · DM Sans · Space Mono
-Build      Angular CLI 19 · esbuild
-Network    Ethereum Sepolia Testnet (11155111)
+| Layer | Technology |
+|---|---|
+| Smart Contract | Solidity `^0.8.34` |
+| Frontend Framework | Angular 17 (Standalone Components) |
+| Web3 Library | ethers.js v6 |
+| Wallet | MetaMask (EIP-1193) |
+| Network | Ethereum Sepolia Testnet |
+| State Management | Angular Signals |
+| Styling | SCSS (custom design system) |
+
+---
+
+## Smart Contract
+
+**File:** `contracts/CryptoBank/CryptoBank.sol`
+
+```solidity
+// SPDX-License-Identifier: GPL-3.0-only
+pragma solidity ^0.8.34;
+
+contract CryptoBank {
+    uint256 public MaxBalance;
+    address public admin;
+    mapping(address => uint256) public UserBalance;
+
+    event EtherDeposit(address user_, uint256 EtherAmount_);
+    event EtherWithDraw(address user_, uint256 EtherAmount_);
+
+    modifier OnlyAdmin() {
+        require(msg.sender == admin, "You are not allow");
+        _;
+    }
+
+    constructor(uint256 MaxBalance_, address admin_) {
+        MaxBalance = MaxBalance_;
+        admin = admin_;
+    }
+
+    function DepositEther() external payable { ... }
+    function WithDrawEther(uint256 amount_) external { ... }
+    function ModifyMaxBalance(uint256 NewMaxBalance_) external OnlyAdmin { ... }
+}
 ```
+
+### Contract Rules
+
+| Rule | Description |
+|---|---|
+| Multi-user | Each address has an independent balance via `mapping(address => uint256)` |
+| Deposit cap | `UserBalance[sender] + msg.value <= MaxBalance` enforced on every deposit |
+| Safe withdrawal | State updated **before** ETH transfer (checks-effects-interactions pattern) |
+| Admin only | `ModifyMaxBalance` restricted to the deployer address via `OnlyAdmin` modifier |
+
+### Deployment
+
+The contract is deployed on **Sepolia testnet**. Update `contractAddress` in `src/environments/environment.ts` after deploying your own instance.
 
 ---
 
 ## Architecture
 
-```txt
-Angular UI
-   ↓
-Signals State Layer
-   ↓
-ethers.js v6
-   ↓
-MetaMask Provider
-   ↓
-CryptoBank Smart Contract
-   ↓
-Ethereum Sepolia
+```
+┌─────────────────────────────────────────────┐
+│                Angular Frontend              │
+│                                             │
+│  Dashboard → Deposit → Withdraw → Admin     │
+│       ↓           ↓        ↓        ↓       │
+│         ContractService (ethers.js)          │
+│                    ↓                         │
+│            Web3Service (MetaMask)            │
+└──────────────────────┬──────────────────────┘
+                       │ JSON-RPC
+              ┌────────▼────────┐
+              │  CryptoBank.sol │
+              │  Sepolia Testnet│
+              └─────────────────┘
 ```
 
----
+### Services
 
-## Project Structure
+**`Web3Service`** — handles all wallet interactions:
+- MetaMask detection and connection (`eth_requestAccounts`)
+- Account and chain change event listeners
+- Network validation against `SUPPORTED_CHAIN_ID` (Sepolia: `11155111`)
 
-```txt
-src/
-├── app/
-│   ├── abi/
-│   │   └── cryptobank.abi.json
-│   │
-│   ├── core/
-│   │   └── services/
-│   │       ├── web3.service.ts
-│   │       └── contract.service.ts
-│   │
-│   ├── features/
-│   │   ├── dashboard/
-│   │   ├── deposit/
-│   │   ├── withdraw/
-│   │   └── admin/
-│   │
-│   ├── guards/
-│   │   └── wallet.guard.ts
-│   │
-│   ├── models/
-│   │   ├── bank.model.ts
-│   │   └── transaction.model.ts
-│   │
-│   ├── shared/
-│   │   ├── components/navbar/
-│   │   └── pipes/ether.pipe.ts
-│   │
-│   ├── app.routes.ts
-│   └── app.component.ts
-│
-├── environments/
-│   ├── environment.ts
-│   └── environment.prod.ts
-│
-└── styles/
-    └── styles.scss
-```
+**`ContractService`** — handles all contract interactions:
+- Reads `MaxBalance`, `UserBalance`, and `admin` from the contract
+- Sends `DepositEther` and `WithDrawEther` transactions with the user's signer
+- Tracks transaction lifecycle (pending → confirmed)
+- Exposes reactive state via Angular Signals
 
----
+### Route Guards
 
-## Smart Contract Interface
-
-The frontend communicates with a Solidity `CryptoBank` contract through the ABI located at:
-
-```txt
-src/app/abi/cryptobank.abi.json
-```
-
-### Available Functions
-
-| Function | Type | Description |
+| Guard | Condition | Redirect |
 |---|---|---|
-| `DepositEther()` | payable | Deposits ETH into the bank |
-| `WithDrawEther(uint256)` | transaction | Withdraws ETH from user balance |
-| `ModifyMaxBalance(uint256)` | admin | Updates global wallet cap |
-| `UserBalance(address)` | view | Reads wallet ETH balance |
-| `MaxBalance()` | view | Reads current max balance |
-| `admin()` | view | Returns contract owner |
-
----
-
-## Design System
-
-### Color Palette
-
-| Token | Hex |
-|---|---|
-| `--black` | `#000000` |
-| `--violet` | `#7D39EB` |
-| `--lime` | `#C6FF33` |
-| `--white` | `#FFFFFF` |
-| `--violet-light` | `#B07AF5` |
-
-### Typography
-
-| Role | Font |
-|---|---|
-| Headings | Bebas Neue |
-| Body | DM Sans |
-| Labels / Addresses | Space Mono |
-
----
-
-## Angular Architecture Notes
-
-### Standalone Components
-The entire application is built without NgModules using Angular Standalone APIs.
-
-### Angular Signals
-Reactive state management is handled entirely with Angular Signals for:
-- wallet state
-- contract state
-- loading states
-- transactions
-- admin detection
-
-### Lazy Loading
-Feature routes use `loadComponent()` for optimized code splitting.
-
-### Functional Guards
-The application uses functional route guards for:
-- wallet connection validation
-- admin authorization
-- network validation
-
----
-
-## Environment Configuration
-
-Configure the deployed contract address inside:
-
-```ts
-// src/environments/environment.ts
-
-export const environment = {
-  production: false,
-  contractAddress: '0x530D75e43753D2bF01b8574446DcC4f7189Da1E9',
-  supportedChainId: 11155111,
-  supportedChainName: 'Sepolia',
-  rpcUrl: 'https://rpc.sepolia.org'
-};
-```
+| `walletGuard` | Wallet must be connected | `/` (home) |
+| `networkGuard` | Must be on Sepolia | `/wrong-network` |
+| `adminGuard` | Must be the contract admin | `/dashboard` |
 
 ---
 
@@ -249,74 +161,117 @@ export const environment = {
 
 ### Prerequisites
 
-- Node.js 20+
-- Angular CLI 19
+- Node.js `>=18`
+- Angular CLI `>=17`
 - MetaMask browser extension
-- Sepolia ETH
-
----
+- Sepolia testnet ETH (from a faucet)
 
 ### Installation
 
 ```bash
-# Clone repository
+# 1. Clone the repository
 git clone https://github.com/your-username/solaris-bank.git
-
-# Enter project directory
 cd solaris-bank
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start development server
-npm start
+# 3. Configure environment (see next section)
+
+# 4. Run the development server
+ng serve
 ```
 
-Application runs at:
+Open `http://localhost:4200` in your browser.
 
-```txt
-http://localhost:4200
+### Deploy the Smart Contract (optional)
+
+If you want to deploy your own instance using Remix or Hardhat:
+
+1. Deploy `contracts/CryptoBank/CryptoBank.sol` to Sepolia
+2. Pass your desired `MaxBalance` (in wei) and `admin` address to the constructor
+3. Copy the deployed contract address into `src/environments/environment.ts`
+
+---
+
+## Environment Configuration
+
+```typescript
+// src/environments/environment.ts
+export const environment = {
+  production: false,
+  contractAddress: '0xYOUR_CONTRACT_ADDRESS_HERE', // ← replace this
+  supportedChainId: 11155111,                        // Sepolia
+  supportedChainName: 'Sepolia',
+  rpcUrl: 'https://rpc.sepolia.org'
+};
+```
+
+> ⚠️ Never commit a private key or funded mainnet address to this file.
+
+---
+
+## Project Structure
+
+```
+solaris-bank/
+├── src/
+│   ├── app/
+│   │   ├── abi/
+│   │   │   └── cryptobank.abi.json       # Contract ABI
+│   │   ├── core/
+│   │   │   └── services/
+│   │   │       ├── contract.service.ts   # On-chain interactions
+│   │   │       └── web3.service.ts       # Wallet connection
+│   │   ├── features/
+│   │   │   ├── dashboard/                # Main view
+│   │   │   ├── deposit/                  # Deposit flow
+│   │   │   ├── withdraw/                 # Withdraw flow
+│   │   │   └── admin/                    # Admin panel
+│   │   ├── guards/
+│   │   │   └── wallet.guard.ts           # walletGuard, networkGuard, adminGuard
+│   │   ├── models/
+│   │   │   ├── bank.model.ts             # BankState, BankStats interfaces
+│   │   │   └── transaction.model.ts      # Transaction, WalletState interfaces
+│   │   ├── shared/
+│   │   │   ├── components/navbar/
+│   │   │   └── pipes/ether.pipe.ts       # Wei → ETH formatting
+│   │   └── app.routes.ts                 # Lazy-loaded route config
+│   ├── environments/
+│   │   ├── environment.ts
+│   │   └── environment.prod.ts
+│   └── styles/
+│       └── styles.scss                   # Global design system
+├── contracts/
+│   └── CryptoBank/
+│       └── CryptoBank.sol
+└── angular.json
 ```
 
 ---
 
-## Production Build
+## Key Design Decisions
 
-```bash
-npm run build
-```
+**Angular Signals over RxJS** — The app uses Angular 17 Signals (`signal`, `computed`) for all reactive state instead of Observables. This reduces boilerplate and aligns with Angular's current recommended approach for component-level state.
 
-Build output:
+**Checks-Effects-Interactions pattern** — The `WithDrawEther` function updates `UserBalance` before calling `msg.sender.call{value}(...)`, preventing reentrancy attacks.
 
-```txt
-dist/solaris-bank
-```
+**Signer vs Provider separation** — Read-only calls (view functions) use a plain `BrowserProvider`. Write operations request a `Signer` from MetaMask, ensuring only the user can sign transactions.
+
+**Lazy loading** — All feature routes use dynamic `import()` so each page is a separate chunk, keeping the initial bundle small.
 
 ---
 
-## Future Improvements
+## Roadmap
 
-- ERC-20 token support
-- Transaction persistence
-- Multi-network support
-- WalletConnect integration
-- Account abstraction
-- Dark/light dynamic themes
-- DeFi staking module
-- Smart contract event indexing
+- [ ] Deploy to Sepolia and add verified contract link (Etherscan)
+- [ ] Add unit tests for ContractService with mock provider
+- [ ] Support WalletConnect in addition to MetaMask
+- [ ] Add Hardhat scripts for local development and testing
+- [ ] Emit `EtherDeposit` event in the contract and listen from the frontend
 
 ---
 
 ## License
 
-MIT License
-
----
-
-<div align="center">
-
-Built on Ethereum with Angular & Solidity
-
-### SOLARIS — Digital Trust Since Tomorrow
-
-</div>
+Distributed under the **GPL-3.0-only** license. See `LICENSE` for more information.
